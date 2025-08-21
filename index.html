@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>粒子序列 · 顺滑无弹性版（2017→2025→Logo 循环）</title>
+<style>
+  html,body{height:100%;margin:0;background:#0b0d12;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  canvas{width:100%;height:100%;display:block}
+  .hud{position:fixed;right:10px;bottom:10px;font:12px/1.4 monospace;color:#cbd5e1;background:rgba(0,0,0,.35);padding:6px 8px;border-radius:8px;user-select:none;white-space:pre}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud" id="hud"></div>
+<img id="logo" src="data:image/jpeg;base64,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" alt="logo" style="display:none"/>
+<script>
+'use strict';
+
+/*** Parameters ***/
+const PARTICLES_MAX   = 32000;
+const BASE_COUNT      = 3200;
+const EXTRA_BUFFER    = 200;
+const POINT_STEP      = 2;
+const MORPH_MS        = 700;
+const MAX_DELAY_MS    = 300;
+const HOLD_DEFAULT    = 1100;
+const FILL_RATIO      = 0.96;    // 统一缩放盒（短边×0.96）
+const BG              = '#0b0d12';
+const FG              = '#e2e8f0';
+// Device pixel ratio (must be defined before using in other constants)
+const DPR = Math.min(2, window.devicePixelRatio||1);
+
+// Mouse interactions (disperse / burst)
+const MOUSE_REPEL_RADIUS   = 160 * DPR; // hover influence radius (kept for weak push)
+const HOVER_PUSH           = 30  * DPR; // weak continuous push added as impulse
+const BURST_RADIUS         = 220 * DPR; // click burst radius
+const BURST_STRENGTH       = 220 * DPR; // click burst impulse strength (px per frame-equivalent)
+const BURST_DECAY_MS       = 650;       // impulse exponential decay time-constant (ms)
+
+const PARTICLE_SIZE   = 2; // 粒子尺寸（像素），当前为原来的 3 倍
+
+/*** No-bounce motion (no spring) ***/
+const EASE = t => t*t*(3-2*t);
+
+/*** Floating motion (per-particle) ***/
+const FLOAT_AMP_MIN = 3.0 * DPR;  // px  (10x bigger)
+const FLOAT_AMP_MAX = 5.0 * DPR; // px  (10x bigger)
+const FLOAT_FREQ_MIN = 0.25;      // Hz
+const FLOAT_FREQ_MAX = 0.55;      // Hz
+const FLOAT_SWAY = 0.45;          // ellipse ratio for y vs x
+const FLOAT_PHASE_VARIANT = 2*Math.PI; // 2π
+
+// Edge fade (soft vignette near viewport borders)
+const EDGE_FADE_WIDTH = 160; // px band inside the edges to start fading
+const EDGE_FADE_MIN   = 0.10; // alpha multiplier at the very edge/outside
+const EDGE_FADE_OUT  = 0.02; // alpha multiplier when particle is outside the canvas (hard cutoff)
+
+// Drift fade (fade particles that drift too far from their target)
+const DRIFT_FADE_START_FACTOR = 0.6;  // start fading at 0.6× of its own floatAmp
+const DRIFT_FADE_END_FACTOR   = 1.2;  // reach min at 1.2× of its own floatAmp
+const DRIFT_FADE_MIN          = 0.10; // alpha multiplier at/after END
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: false });
+
+function fit(){
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  canvas.width = Math.floor(innerWidth*dpr);
+  canvas.height= Math.floor(innerHeight*dpr);
+  ctx.imageSmoothingEnabled = false;
+}
+addEventListener('resize', ()=>{ fit(); reassignCurrent(performance.now()); });
+fit();
+
+// ==== Mouse interactions (hover repel + click burst) ====
+let MOUSE_X = -1, MOUSE_Y = -1, MOUSE_ACTIVE = false;
+let BURST_EVENT = null; // {x,y,t}
+canvas.addEventListener('mousemove', (e)=>{
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  MOUSE_X = (e.clientX - rect.left) * dpr;
+  MOUSE_Y = (e.clientY - rect.top)  * dpr;
+  MOUSE_ACTIVE = true;
+});
+canvas.addEventListener('mouseleave', ()=>{ MOUSE_ACTIVE = false; });
+canvas.addEventListener('mousedown', (e)=>{
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  const x = (e.clientX - rect.left) * dpr;
+  const y = (e.clientY - rect.top)  * dpr;
+  BURST_EVENT = { x, y, t: performance.now() };
+});
+
+/*** PRNG helpers ***/
+function hash01(i, seed){
+  let x = (i ^ (seed*0x9e3779b1))|0;
+  x ^= x>>>17; x = Math.imul(x, 0xed5ad4bb);
+  x ^= x>>>11; x = Math.imul(x, 0xac4c1b51);
+  x ^= x>>>15; x = Math.imul(x, 0x31848bab);
+  x ^= x>>>14;
+  return (x>>>0)/4294967296;
+}
+function permute(i, m, seed){
+  let x = (i ^ (seed*0x85ebca6b))|0;
+  x ^= x>>>16; x = Math.imul(x, 0x7feb352d);
+  x ^= x>>>15; x = Math.imul(x, 0x846ca68b);
+  x ^= x>>>16;
+  const r = x % m; return r<0 ? r+m : r;
+}
+
+/*** Particles ***/
+class P{
+  constructor(i){
+    this.i=i;
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height;
+    this.px=this.x; this.py=this.y;
+    this.nx=this.x; this.ny=this.y;
+    this.alpha=0; this.size=PARTICLE_SIZE;
+    this.delay = Math.random()*MAX_DELAY_MS;
+    this.morphStart = performance.now();
+    this.alphaT0 = 0; this.alphaDur = MORPH_MS;
+    this.alphaStart = 0; this.alphaGoal = 1;
+    // floating params
+    const aRnd = hash01(i, 101);
+    const fRnd = hash01(i, 202);
+    const p1Rnd = hash01(i, 303);
+    const p2Rnd = hash01(i, 404);
+    this.floatAmp = FLOAT_AMP_MIN + (FLOAT_AMP_MAX - FLOAT_AMP_MIN) * aRnd;
+    this.floatFreq = FLOAT_FREQ_MIN + (FLOAT_FREQ_MAX - FLOAT_FREQ_MIN) * fRnd;
+    this.phaseX = p1Rnd * FLOAT_PHASE_VARIANT;
+    this.phaseY = p2Rnd * FLOAT_PHASE_VARIANT;
+    // impulse state (for disperse/burst)
+    this.impX = 0;
+    this.impY = 0;
+    this.lastBurstT = -1;
+  }
+  setTarget(pt, t, switchSeed){
+    this.px=this.x; this.py=this.y;
+    this.nx=pt.x;   this.ny=pt.y;
+    const jitter = hash01(this.i, switchSeed)*60;
+    this.morphStart = t + this.delay + jitter;
+    this.alphaStart = this.alpha || 1;
+    this.alphaGoal  = 1;
+    this.alphaT0    = this.morphStart;
+    this.alphaDur   = MORPH_MS;
+  }
+  baseLerp(t){
+    const u = Math.max(0, Math.min(1, (t - this.morphStart)/MORPH_MS));
+    const s = EASE(u);
+    return { x: this.px + (this.nx - this.px)*s, y: this.py + (this.ny - this.py)*s };
+  }
+  step(t, dtMs){
+    const target = this.baseLerp(t);
+    // gentle floating drift (independent per particle)
+    const ts = t * 0.001; // seconds
+    const dx = Math.sin((ts*this.floatFreq)*2*Math.PI + this.phaseX) * this.floatAmp;
+    const dy = Math.cos((ts*this.floatFreq)*2*Math.PI + this.phaseY) * this.floatAmp * FLOAT_SWAY;
+    this.x = target.x + dx;
+    this.y = target.y + dy;
+    this.driftMag = Math.hypot(dx, dy);
+
+    // --- impulse decay (exponential) ---
+    const decay = Math.exp(-Math.max(0, dtMs || 16) / BURST_DECAY_MS);
+    this.impX *= decay;
+    this.impY *= decay;
+
+    // --- hover weak push converted to impulse ---
+    if (MOUSE_ACTIVE) {
+      const rx = this.x - MOUSE_X;
+      const ry = this.y - MOUSE_Y;
+      const R  = MOUSE_REPEL_RADIUS;
+      const d2 = rx*rx + ry*ry;
+      if (d2 < R*R) {
+        const d = Math.max(1e-6, Math.sqrt(d2));
+        let w = 1 - d / R;           // 0 at edge, 1 at center
+        w = w*w*(3 - 2*w);           // smoothstep
+        const push = HOVER_PUSH * w;
+        this.impX += (rx / d) * push;
+        this.impY += (ry / d) * push;
+      }
+    }
+
+    // --- click burst (one-shot per event) ---
+    if (BURST_EVENT && this.lastBurstT !== BURST_EVENT.t) {
+      const rx = this.x - BURST_EVENT.x;
+      const ry = this.y - BURST_EVENT.y;
+      const R  = BURST_RADIUS;
+      const d2 = rx*rx + ry*ry;
+      if (d2 < R*R) {
+        const d = Math.max(1e-6, Math.sqrt(d2));
+        let w = 1 - d / R;           // 0 at edge, 1 at center
+        w = w*w;                      // sharper burst falloff
+        const push = BURST_STRENGTH * w;
+        // add slight tangential jitter to make it feel like "disperse"
+        const tx = -ry / d, ty = rx / d; // tangential unit
+        const jitter = 0.25 * w;
+        this.impX += (rx / d) * push + tx * push * jitter;
+        this.impY += (ry / d) * push + ty * push * jitter;
+        this.lastBurstT = BURST_EVENT.t;
+      }
+    }
+
+    // apply impulse to position (on top of morph + float)
+    this.x += this.impX;
+    this.y += this.impY;
+
+    // alpha tween
+    const u = Math.max(0, Math.min(1, (t - this.alphaT0)/this.alphaDur));
+    this.alpha = this.alphaStart + (this.alphaGoal - this.alphaStart)*EASE(u);
+  }
+  draw(c){
+    if (this.alpha < 0.02) return;
+    c.globalAlpha = this.alpha;
+    // HARD CUTOFF fades — no gradients
+    // 1) If particle is outside the canvas, drop alpha hard
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+      c.globalAlpha *= EDGE_FADE_OUT; // almost invisible when outside
+    }
+
+    // 2) If particle's floating drift exceeds per-particle cutoff, drop alpha hard
+    //    Using DRIFT_FADE_START_FACTOR as the cutoff threshold
+    const driftCut = DRIFT_FADE_START_FACTOR * this.floatAmp;
+    if ((this.driftMag || 0) >= driftCut) {
+      c.globalAlpha *= DRIFT_FADE_MIN; // immediate dim when exceeding shape boundary
+    }
+    c.fillRect(this.x, this.y, this.size, this.size);
+  }
+}
+
+const pool = [];
+let USER_PARTICLES = null; // null means auto; number means user override
+function resizePoolTo(n){
+  n = Math.max(0, Math.min(PARTICLES_MAX, n|0));
+  if (n > pool.length) { ensure(n); }
+  else { pool.length = n; }
+}
+function desiredPoolSize(autoSuggest){
+  return (USER_PARTICLES==null) ? autoSuggest : Math.max(0, Math.min(PARTICLES_MAX, USER_PARTICLES|0));
+}
+// mouse wheel to adjust particle count
+addEventListener('wheel', (e)=>{
+  e.preventDefault();
+  const step = e.shiftKey ? 5000 : 1000;
+  const dir = (e.deltaY>0) ? -1 : 1; // wheel down => decrease
+  const current = (USER_PARTICLES==null) ? pool.length : USER_PARTICLES;
+  USER_PARTICLES = Math.max(0, Math.min(PARTICLES_MAX, current + dir*step));
+  resizePoolTo(USER_PARTICLES);
+  // reassign current targets so mapping stays stable
+  reassignCurrent(performance.now());
+},{passive:false});
+function ensure(n){
+  while(pool.length<n && pool.length<PARTICLES_MAX) pool.push(new P(pool.length));
+}
+
+/*** Sampling (text & image with enhanced logo extraction) ***/
+const off = document.createElement('canvas');
+const octx = off.getContext('2d');
+function box(){
+  const M = Math.min(canvas.width, canvas.height)*FILL_RATIO;
+  const w = Math.max(2, Math.floor(M));
+  const h = w; // square
+  const cx = (canvas.width - w)*0.5;
+  const cy = (canvas.height- h)*0.5;
+  return {w,h,cx,cy};
+}
+
+function textPoints(txt){
+  const {w,h,cx,cy} = box();
+  off.width = w; off.height = h;
+  octx.clearRect(0,0,w,h);
+  octx.fillStyle='#fff';
+  octx.textAlign='center'; octx.textBaseline='middle';
+  octx.font = '100px Arial, Helvetica, sans-serif';
+  const m = octx.measureText(txt);
+  const targetW = w*0.92;
+  const px = Math.max(16, Math.floor(100 * (targetW/Math.max(1,m.width))));
+  octx.font = 'bold '+px+'px Arial, Helvetica, sans-serif';
+  octx.fillText(txt, w/2, h/2);
+  const img = octx.getImageData(0,0,w,h).data;
+  const pts=[];
+  for(let y=0;y<h;y+=POINT_STEP){
+    for(let x=0;x<w;x+=POINT_STEP){
+      const i=(y*w+x)*4;
+      if(img[i+3]>18) pts.push({x:cx+x, y:cy+y});
+    }
+  }
+  return pts.length?pts: [{x:cx+w/2,y:cy+h/2}];
+}
+
+/*** Otsu threshold + background auto-detect for logo ***/
+function otsuThreshold(hist, total){
+  let sum = 0;
+  for(let t=0;t<256;t++) sum += t*hist[t];
+  let sumB=0, wB=0, wF=0, varMax=0, threshold=127;
+  for(let t=0;t<256;t++){
+    wB += hist[t];
+    if (wB === 0) continue;
+    wF = total - wB;
+    if (wF === 0) break;
+    sumB += t*hist[t];
+    const mB = sumB / wB;
+    const mF = (sum - sumB) / wF;
+    const between = wB * wF * (mB - mF) * (mB - mF);
+    if (between > varMax) { varMax = between; threshold = t; }
+  }
+  return threshold;
+}
+
+function imagePoints(img){
+  const {w:boxW, h:boxH, cx, cy} = box();
+  const iw = Math.max(2, img.naturalWidth), ih = Math.max(2, img.naturalHeight);
+  const s = (boxW*0.92)/Math.max(iw, ih);
+  const w = Math.max(2, Math.round(iw*s));
+  const h = Math.max(2, Math.round(ih*s));
+  off.width=w; off.height=h;
+  octx.clearRect(0,0,w,h);
+  octx.drawImage(img,0,0,w,h);
+  const data = octx.getImageData(0,0,w,h).data;
+
+  // Build histogram + border brightness
+  const hist = new Uint32Array(256);
+  let borderSum = 0, borderCnt = 0;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const i=(y*w+x)*4;
+      const lum = Math.max(0, Math.min(255, Math.round(0.2126*data[i] + 0.7152*data[i+1] + 0.0722*data[i+2])));
+      hist[lum]++;
+      if (y<4 || x<4 || y>=h-4 || x>=w-4){ borderSum += lum; borderCnt++; }
+    }
+  }
+  const total = w*h;
+  const thr = otsuThreshold(hist, total);
+  const borderAvg = borderCnt ? borderSum/borderCnt : 0;
+  const mode = (borderAvg < 110) ? 'brightOnDark' : (borderAvg > 145 ? 'darkOnLight' : 'mixed');
+
+  const pts=[];
+  const xoff = cx + Math.floor((boxW-w)*0.5);
+  const yoff = cy + Math.floor((boxH-h)*0.5);
+  const step = POINT_STEP;
+  for(let y=0;y<h;y+=step){
+    for(let x=0;x<w;x+=step){
+      const i=(y*w+x)*4, a=data[i+3];
+      if (a < 10) continue;
+      const lum = (0.2126*data[i] + 0.7152*data[i+1] + 0.0722*data[i+2]);
+      let ok=false;
+      if (mode==='brightOnDark') ok = lum >= thr*0.95;
+      else if (mode==='darkOnLight') ok = lum <= thr*1.05;
+      else ok = (lum >= thr*1.02) || (lum <= thr*0.85);
+      if (ok) pts.push({x:xoff + x, y:yoff + y});
+    }
+  }
+  // densify if sparse
+  if (pts.length < 1200){
+    const need = 2800 - pts.length;
+    for(let k=0;k<need;k++){
+      const spt = pts[k%Math.max(1,pts.length)];
+      const ang = (k*0.618)% (Math.PI*2);
+      const r = (k%3+1)*1.1;
+      pts.push({x: spt.x + Math.cos(ang)*r, y: spt.y + Math.sin(ang)*r});
+    }
+  }
+  return pts.length?pts: textPoints('LOGO');
+}
+
+/*** Sequence ***/
+const SEQ = [];
+// Opening with Logo
+SEQ.push({ type:'image', el:document.getElementById('logo'), hold:1800 });
+// Years 2017 → 2025
+for (let y = 2017; y <= 2025; y++) {
+  SEQ.push({ type:'text', value:String(y), hold:1100 });
+}
+// Ending with Logo again so the loop returns to a logo before cycling
+SEQ.push({ type:'image', el:document.getElementById('logo'), hold:1800 });
+
+let cur = 0, switchSeed = 1;
+let STATE='morph', NEXT_AT=0;
+
+function makePoints(step){
+  if(step.type==='text') return textPoints(step.value);
+  if(step.type==='image') return imagePoints(step.el);
+  return textPoints('2025');
+}
+
+let targets = makePoints(SEQ[0]);
+function assign(points, t){
+  targets = points;
+  const autoSuggest = Math.max(BASE_COUNT + EXTRA_BUFFER, points.length + EXTRA_BUFFER);
+  resizePoolTo(desiredPoolSize(autoSuggest));
+  const L = pool.length, M = points.length||1;
+  switchSeed++;
+  for(let i=0;i<L;i++){
+    const idx = permute(i, M, switchSeed);
+    const p = points[idx];
+    pool[i].setTarget(p, t, switchSeed);
+    pool[i].alphaGoal = (i < M ? 1.0 : 0.14);
+  }
+  NEXT_AT = t + Math.max(MORPH_MS + MAX_DELAY_MS + 80, SEQ[cur].hold||HOLD_DEFAULT);
+  STATE='morph';
+}
+
+function reassignCurrent(t){
+  assign(makePoints(SEQ[cur]), t);
+}
+
+/*** Loop ***/
+function hud(){
+  const el = document.getElementById('hud');
+  el.textContent = `step ${cur+1}/${SEQ.length}  state:${STATE}
+targets:${targets.length}  particles:${pool.length}${USER_PARTICLES==null?' (auto)':''}
+scroll: ±1000  (Shift=±5000) | mouse: hover repel, click burst`;
+}
+
+function tick(){
+  requestAnimationFrame(tick);
+  const t = performance.now();
+  tick.prev = tick.prev || t;
+  const dtMs = Math.min(50, t - tick.prev);
+  tick.prev = t;
+  ctx.globalAlpha=1; ctx.fillStyle = BG; ctx.fillRect(0,0,canvas.width, canvas.height);
+  ctx.fillStyle = FG;
+  for(let i=0;i<pool.length;i++){ pool[i].step(t, dtMs); pool[i].draw(ctx); }
+  if (t >= NEXT_AT){
+    cur = (cur + 1) % SEQ.length;
+    assign(makePoints(SEQ[cur]), t);
+  }
+  hud();
+}
+assign(targets, performance.now());
+tick();
+
+</script>
+</body>
+</html>
